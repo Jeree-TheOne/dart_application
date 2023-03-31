@@ -1,0 +1,37 @@
+version: '3.5'
+
+services:
+  dart_app:
+    build: ./
+    container_name: api
+    ports:
+      - 8887:8887
+    environment:
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=1
+      - DB_HOST=127.0.0.1
+      - DB_PORT=5432
+      - DB_NAME=postgres
+      - PORT=8887
+    depends_on:
+      - db_auth
+    networks:
+      - network
+
+  db_auth:
+    container_name: db_auth
+    ports:
+      - "5432:5433"
+    environment:
+      - POSTGRES_PASSWORD=1
+      - POSTGRES_USER=postgres
+    image: postgres:14.3-alpine
+    volumes:
+      - db_auth_vol:/var/lib/postgres/data/
+    networks:
+      - network
+networks:
+  network:
+    driver: bridge
+volumes:
+  db_auth_vol: {}
